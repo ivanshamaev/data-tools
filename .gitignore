@@ -1,0 +1,3 @@
+# Ignore runtime logs and Python cache
+logs/
+__pycache__/
