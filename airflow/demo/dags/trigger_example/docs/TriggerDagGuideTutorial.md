@@ -2,6 +2,19 @@
 
 **Overview**: этот документ объясняет поведение двух дагов, находящихся в `airflow/demo/dags/trigger_example` — `query_by_id` и `trigger_query_by_id_mapped`. Сначала детально описан каждый даг по отдельности, затем их взаимодействие, ограничения и рекомендации по настройке.
 
+
+**trigger_query_by_id_mapped:**
+
+![trigger_query_by_id_mapped](airflow/demo/dags/trigger_example/images/trigger_query_by_id_mapped.png)
+
+**query_by_id:**
+
+![query_by_id](airflow/demo/dags/trigger_example/images/query_by_id.png)
+
+**postgresql_connection:**
+
+![postgresql_connection](airflow/demo/dags/trigger_example/images/postgresql_connection.png)
+
 **Файлы**
 - `query_by_id`: [airflow/demo/dags/trigger_example/dag_query_by_id.py](airflow/demo/dags/trigger_example/dag_query_by_id.py#L1-L200)
 - `trigger_query_by_id_mapped`: [airflow/demo/dags/trigger_example/dag_trigger_query_by_id_mapped.py](airflow/demo/dags/trigger_example/dag_trigger_query_by_id_mapped.py#L1-L200)
