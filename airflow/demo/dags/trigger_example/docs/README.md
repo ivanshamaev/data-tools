@@ -1,6 +1,11 @@
-**Airflow Trigger DAG Guide**
+# Airflow Trigger DAG Guide
 
-**Overview**: этот документ объясняет поведение двух дагов, находящихся в `airflow/demo/dags/trigger_example` — `query_by_id` и `trigger_query_by_id_mapped`. Сначала детально описан каждый даг по отдельности, затем их взаимодействие, ограничения и рекомендации по настройке.
+**Два подраздела**
+- [Airflow Mapped Tasks Tutorial](AirflowMappedTasksTutorial.md)
+- [Airflow Trigger Dag Tutorial](AirflowTriggerDagTutorial.md)
+
+# Overview
+Этот документ объясняет поведение двух дагов, находящихся в `airflow/demo/dags/trigger_example` — `query_by_id` и `trigger_query_by_id_mapped`. Сначала детально описан каждый даг по отдельности, затем их взаимодействие, ограничения и рекомендации по настройке.
 
 
 **trigger_query_by_id_mapped:**
