@@ -16,8 +16,8 @@
 ![postgresql_connection](../images/postgresql_connection.png)
 
 **Файлы**
-- `query_by_id`: [airflow/demo/dags/trigger_example/dag_query_by_id.py](airflow/demo/dags/trigger_example/dag_query_by_id.py#L1-L200)
-- `trigger_query_by_id_mapped`: [airflow/demo/dags/trigger_example/dag_trigger_query_by_id_mapped.py](airflow/demo/dags/trigger_example/dag_trigger_query_by_id_mapped.py#L1-L200)
+- `query_by_id`: [airflow/demo/dags/trigger_example/dag_query_by_id.py](airflow/demo/dags/trigger_example/dag_query_by_id.py)
+- `trigger_query_by_id_mapped`: [airflow/demo/dags/trigger_example/dag_trigger_query_by_id_mapped.py](airflow/demo/dags/trigger_example/dag_trigger_query_by_id_mapped.py)
 
 **1) DAG `query_by_id` — что делает и как устроен**
 
