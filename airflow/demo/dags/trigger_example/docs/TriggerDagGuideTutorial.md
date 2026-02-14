@@ -5,15 +5,15 @@
 
 **trigger_query_by_id_mapped:**
 
-![trigger_query_by_id_mapped](airflow/demo/dags/trigger_example/images/trigger_query_by_id_mapped.png)
+![trigger_query_by_id_mapped](../images/trigger_query_by_id_mapped.png)
 
 **query_by_id:**
 
-![query_by_id](airflow/demo/dags/trigger_example/images/query_by_id.png)
+![query_by_id](../images/query_by_id.png)
 
 **postgresql_connection:**
 
-![postgresql_connection](airflow/demo/dags/trigger_example/images/postgresql_connection.png)
+![postgresql_connection](../images/postgresql_connection.png)
 
 **Файлы**
 - `query_by_id`: [airflow/demo/dags/trigger_example/dag_query_by_id.py](airflow/demo/dags/trigger_example/dag_query_by_id.py#L1-L200)
