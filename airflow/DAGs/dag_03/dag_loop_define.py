@@ -15,6 +15,6 @@ with DAG(dag_id='dag_loop_define', start_date=datetime(2024,1,1), schedule_inter
             print(f'Running loop task {i}')
         return _run
 
-    for i in range(1, 4):
+    for i in range(0, 6):
         t = PythonOperator(task_id=f'loop_task_{i}', python_callable=make_callable(i))
         start >> t

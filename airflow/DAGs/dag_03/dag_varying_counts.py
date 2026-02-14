@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 import json
 from typing import List
+import time 
 
 from airflow import DAG
 from airflow.decorators import task
@@ -50,12 +51,13 @@ with DAG(dag_id='dag_varying_counts', start_date=datetime(2024, 1, 1), schedule_
         # Возвращаем список элементов для mapping
         return list(range(count))
 
-    @task
+    @task(max_active_tis_per_dag=1)
     def process(i: int) -> str:
         # Простая обработка — в реале сюда идёт бизнес-логика
         msg = f'processed {i}'
+        time.sleep(2)
         print(msg)
         return msg
 
     items = get_items()
-    results = process.map(items)
+    results = process.expand(i=items)
