@@ -9,10 +9,12 @@ from __future__ import annotations
 from datetime import datetime
 import logging
 from random import randint
+import time
 
 from airflow import DAG
 from airflow.decorators import task
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
+from airflow.operators.python import PythonOperator
 
 
 @task
@@ -35,10 +37,29 @@ with DAG(
 
     # Trigger `query_by_id` for each generated id. `conf` expects a dict per mapped
     # run, so `items` is already in the correct shape: [{"id": 1}, {"id": 2}, ...]
-    trigger_mapped = TriggerDagRunOperator.partial(
+    def log_trigger_callable(id: int, **kwargs):
+        logging.info("Triggering DAG 'query_by_id' with id=%s", id)
+
+    # Each mapped task will log and then trigger the target DAG. Using a
+    # PythonOperator lets us log first and then create+execute a
+    # TriggerDagRunOperator programmatically so the same mapped task both logs
+    # and triggers.
+    def log_and_trigger_callable(id: int, **context):
+        logging.info("Triggering DAG 'query_by_id' with id=%s", id)
+        time.sleep(2)  # Simulate some processing time before the trigger
+        # Create a TriggerDagRunOperator instance and execute it immediately
+        trig = TriggerDagRunOperator(
+            task_id="inline_trigger_%s" % id,
+            trigger_dag_id="query_by_id",
+            conf={"id": id},
+            wait_for_completion=False,
+        )
+        trig.execute(context)
+
+    trigger_mapped = PythonOperator.partial(
         task_id="trigger_query_by_id",
-        trigger_dag_id="query_by_id",
+        python_callable=log_and_trigger_callable,
         max_active_tis_per_dag=1,
-    ).expand(conf=items)
+    ).expand(op_kwargs=items)
 
     items >> trigger_mapped

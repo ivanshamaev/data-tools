@@ -16,25 +16,26 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 # change to your connection id if needed
 DEFAULT_CONN_ID = "postgres_default"
+DEFAULT_ID = 1
 
 
 def query_by_id_callable(**context):
-    # Prefer dag_run.conf, fall back to params
+    # Prefer dag_run.conf, fall back to params, then use DEFAULT_ID
 
     time.sleep(2)  # Simulate some processing time before the query
 
     dag_run = context.get("dag_run")
     run_conf = getattr(dag_run, "conf", None) or {}
-    item = run_conf.get("id") or context.get("params", {}).get("id")
+    item = run_conf.get("id") or context.get("params", {}).get("id") or DEFAULT_ID
 
     if item is None:
-        raise ValueError("No 'id' provided in dag_run.conf or params")
+        logging.info("No 'id' provided; using DEFAULT_ID=%s", DEFAULT_ID)
 
     hook = PostgresHook(postgres_conn_id=DEFAULT_CONN_ID)
-    sql = "SELECT id, event_date FROM af_data.date_list WHERE id = %s"
-    logging.info("Executing SQL for id %s: %s", item, sql)
+    sql = f"SELECT id, event_date FROM af_data.date_list WHERE id = {item}"
+    logging.info("Executing SQL: {sql}")
     try:
-        records = hook.get_records(sql, parameters=(item,))
+        records = hook.get_records(sql)
     except Exception as e:
         logging.exception("Query failed for id %s: %s", item, e)
         raise
@@ -52,6 +53,7 @@ with DAG(
     schedule_interval=None,
     catchup=False,
     max_active_runs=1,
+    params={"id": DEFAULT_ID},
 ) as dag:
 
     task_query = PythonOperator(
