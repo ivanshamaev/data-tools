@@ -26,25 +26,25 @@ def query_by_id_callable(**context):
 
     dag_run = context.get("dag_run")
     run_conf = getattr(dag_run, "conf", None) or {}
-    item = run_conf.get("id") or context.get("params", {}).get("id") or DEFAULT_ID
+    id = run_conf.get("id") or context.get("params", {}).get("id") or DEFAULT_ID
 
-    if item is None:
+    if id is None:
         logging.info("No 'id' provided; using DEFAULT_ID=%s", DEFAULT_ID)
 
     hook = PostgresHook(postgres_conn_id=DEFAULT_CONN_ID)
-    sql = f"SELECT id, event_date FROM af_data.date_list WHERE id = {item}"
+    sql = f"SELECT id, event_date FROM af_data.date_list WHERE id = {id}"
     logging.info("Executing SQL: {sql}")
     try:
         records = hook.get_records(sql)
     except Exception as e:
-        logging.exception("Query failed for id %s: %s", item, e)
+        logging.exception("Query failed for id %s: %s", id, e)
         raise
 
     if not records:
-        logging.info("No rows returned for id=%s", item)
+        logging.info("No rows returned for id=%s", id)
     else:
         for row in records:
-            logging.info("Result for id=%s: %s", item, row)
+            logging.info("Result for id=%s: %s", id, row)
 
 
 with DAG(
