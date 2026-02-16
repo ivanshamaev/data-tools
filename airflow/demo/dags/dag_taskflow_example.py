@@ -1,36 +1,34 @@
-"""Example DAG: generate list from runtime parameter n and print it.
-
-Usage:
- - Trigger the DAG with a JSON conf containing n, for example:
-     airflow dags trigger -c '{"n": 5}' dag_taskflow_example
-"""
-from datetime import datetime
+from airflow.decorators import dag, task
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.utils.dates import days_ago
+from datetime import datetime
+import logging
 
-default_args = {
-    'owner': 'airflow',
-}
 
-def generate_list(n=3, **kwargs):
-    """Generate list from 1 to n. n is expected to be int-like or string of int."""
-    n_param = '{{ dag_run.conf.get("n", params.n) }}'
-    try:
-        nn = int(n)
-    except Exception:
-        nn = 0
-    return list(range(1, nn + 1))
+default_args = { 'owner': 'airflow', }
 
-def print_numbs(**context):
-    """Pulls XCom from `generate_numbs` and prints it."""
-    generated_lst = context["generated_lst"]
+@task(multiple_outputs=True)
+def generate_list(**context):
+    logging.info(f"context: {context}")
+
+    n_param = int(context.get("params", {}).get("n"))
+
+    logging.info(f"Received n_param: {n_param} (type: {type(n_param)})")
+
+    return {
+        "list_1": list(range(1, n_param + 1)), 
+        "list_2": list(range(1, n_param + 3))
+    }
+
+
+def print_numbs(generated_lst):
     print(f"generated_lst: {generated_lst}")
+
 
 with DAG(
     dag_id='dag_taskflow_example',
     default_args=default_args,
-    start_date=days_ago(1),
+    start_date=datetime(2026, 1, 1),
     schedule_interval=None,
     catchup=False,
     tags=['example'],
@@ -42,6 +40,5 @@ with DAG(
     generate_numbs = PythonOperator(
         task_id='print_numbs',
         python_callable=print_numbs,
-        op_kwargs={'generated_lst': generated_lst},
+        op_kwargs={'generated_lst': generated_lst['list_1']},
     )
-
